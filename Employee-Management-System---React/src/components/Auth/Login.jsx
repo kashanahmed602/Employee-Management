@@ -30,7 +30,7 @@ const Login = ({ setUser }) => {
     }catch(error){
       console.error(error);
 
-      alert(error.response?.data?.message || "Login Failed");
+      alert(error.response?.data?.message);
 
     }
   } 
