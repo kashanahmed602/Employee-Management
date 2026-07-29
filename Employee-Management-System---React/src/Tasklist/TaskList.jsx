@@ -21,7 +21,7 @@ const TaskList = ({ data, selectedType }) => {
 
         if(!user) return;
 
-        const response = await axios.get(`http://localhost:5000/api/v1/allTask/${user._id}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/allTask/${user._id}`);
         console.log('response data', response.data.task);
         setTasks(response.data.task);
       }catch(error){

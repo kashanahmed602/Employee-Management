@@ -7,7 +7,7 @@ const AcceptTask = ({data}, onClick) => {
     e.stopPropagation();
 
     try{
-      const response = await axios.put(`http://localhost:5000/api/v1/taskUpdate/${data._id}`,{
+      const response = await axios.put(`${import.meta.env.API_VITE_URL}/taskUpdate/${data._id}`,{
         type: "Completed Task"
       });
 
@@ -25,7 +25,7 @@ const AcceptTask = ({data}, onClick) => {
     e.stopPropagation();
 
     try{
-      const response = await axios.put(`http://localhost:5000/api/v1/taskUpdate/${data._id}`,{
+      const response = await axios.put(`${import.meta.env.API_VITE_URL}/taskUpdate/${data._id}`,{
         type: "Failed Task"
       });
 

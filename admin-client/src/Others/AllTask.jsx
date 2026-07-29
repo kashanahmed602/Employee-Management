@@ -14,7 +14,7 @@ const AllTask = () => {
     const fetchTask = async (req, res) => {
       try{
 
-        const response = await axios.get('http://localhost:5000/api/v1/allTask');
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/allTask`);
         console.log('all Task Response : ', response.data.task);
         setTask(response.data.task);
 
@@ -25,7 +25,7 @@ const AllTask = () => {
 
     const fetchEmployee = async (req, res) => {
       try{
-      const response = await axios.get('http://localhost:5000/api/v1/employee');
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/employee`);
       console.log('Employee Fetched : ', response.data.employee);
       setEmployee(response.data.employee);
 

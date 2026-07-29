@@ -17,7 +17,7 @@ const TaskChatModal = ({ task, onClose }) => {
     const fetchChat = async()=>{
 
         const res=await axios.get(
-            `http://localhost:5000/api/v1/getTaskChat/${task._id}`
+            `${import.meta.env.VITE_API_URL}/getTaskChat/${task._id}`
         );
 
         setMessages(res.data.chat);
@@ -29,7 +29,7 @@ const TaskChatModal = ({ task, onClose }) => {
         if(message==="") return;
 
         await axios.post(
-            `http://localhost:5000/api/v1/taskChat/${task._id}`,
+            `${import.meta.env.VITE_API_URL}/taskChat/${task._id}`,
             {
                 sender:"admin",
                 message

@@ -15,7 +15,7 @@ const TaskDetailModal = ({ task, onClose }) => {
 
    const fetchChat = async () => {
       try{
-        const response = await axios.get(`http://localhost:5000/api/v1/getTaskChat/${task._id}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/getTaskChat/${task._id}`);
         setGetMessage(response.data.chat);
       }catch(error){
         console.log(error);
@@ -25,7 +25,7 @@ const TaskDetailModal = ({ task, onClose }) => {
 
   const addChat = async () => {
     try{
-      const response = await axios.post(`http://localhost:5000/api/v1/taskChat/${task._id}`,{
+      const response = await axios.post(`${import.meta.env.API_VITE_URL}/taskChat/${task._id}`,{
         sender: "employee",
         message
       });

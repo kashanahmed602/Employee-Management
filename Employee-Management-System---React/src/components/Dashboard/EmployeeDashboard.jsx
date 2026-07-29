@@ -12,7 +12,7 @@ const [selectedType, setSelectedType] = useState("All");
 useEffect(() => {
       const fetchedTask = async () => {
         try{
-          const response = await axios.get(`http://localhost:5000/api/v1/allTask/${data._id}`);
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/allTask/${data._id}`);
 
           console.log('response Task list : ', response.data.task);
           setTask(response.data.task);

@@ -13,7 +13,7 @@ const AddTask = () => {
   useEffect(()=>{
     const getEmployees = async () =>{
       try{
-          const response = await axios.get('http://localhost:5000/api/v1/employee');
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/employee`);
 
           console.log('employee response : ', response.data.employee);
           
@@ -29,7 +29,7 @@ const AddTask = () => {
     e.preventDefault();
 
     try{
-        const response = await axios.post('http://localhost:5000/api/v1/createTask',{
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/createTask`,{
           title,
           date,
           assign,

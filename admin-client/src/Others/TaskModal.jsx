@@ -36,7 +36,7 @@ const TaskModal = ({ employee, task, onClose }) => {
   const taskDeleted = async (id) => {
     try{
 
-      const response = await axios.delete(`http://localhost:5000/api/v1/taskdelete/${id}`);
+      const response = await axios.delete(`${import.meta.env.VITE_API_URL}/taskdelete/${id}`);
 
       alert("Task Deleted");
 

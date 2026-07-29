@@ -7,7 +7,7 @@ const NewTask = ({data, onClick}) => {
     e.stopPropagation();
 
     try{
-    const response = await axios.put(`http://localhost:5000/api/v1/taskUpdate/${data._id}`, {
+    const response = await axios.put(`${import.meta.env.VITE_API_URL}/taskUpdate/${data._id}`, {
       type: "Active Task"
     });
 
