@@ -11,12 +11,12 @@ app.get("/", (req, res) => {
 })
 
 
-app.post("/api/v1/auth/login", (req, res) => {
-    res.json({
-        success: true,
-        message: "Direct login route working"
-    });
-});
+// app.post("/api/v1/auth/login", (req, res) => {
+//     res.json({
+//         success: true,
+//         message: "Direct login route working"
+//     });
+// });
 
 console.log("APP VERSION: LOGIN TEST");
 
