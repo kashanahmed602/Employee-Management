@@ -18,6 +18,8 @@ app.post("/api/v1/auth/login", (req, res) => {
     });
 });
 
+console.log("APP VERSION: LOGIN TEST");
+
 app.use("/api/v1", require("./Route/authRoute"));
 app.use("/api/v1", require('./Route/employees'));
 app.use("/api/v1", require('./Route/taskRoute'));
