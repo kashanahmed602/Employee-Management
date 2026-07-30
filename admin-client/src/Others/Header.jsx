@@ -3,10 +3,11 @@ import React from 'react'
 const Header = (props) => {
 
   const logOut = () => {
-    localStorage.setItem("loggin", "")
-    // window.location.reload()
-    props.userChange('')
-  }
+  localStorage.removeItem("user");
+  localStorage.removeItem("token");
+
+  props.setAdmin(null);
+}
 
   const handleAdd = () => {
     console.log("Add Button Clicked");
@@ -23,6 +24,15 @@ const Header = (props) => {
       </h1>
 
       <div className='flex gap-4'>
+
+        <button
+          onClick={()=> props.setShowMakeTeam(true)}
+          className='text-white bg-blue-600 hover:bg-blue-700 px-5 py-3 text-xl rounded-lg active:scale-90'
+        >
+          Make Team
+        </button>
+
+
         <button
           onClick={()=> props.setShowAddEmp(true)}
           className='text-white bg-green-600 hover:bg-green-700 px-5 py-3 text-xl rounded-lg active:scale-90'

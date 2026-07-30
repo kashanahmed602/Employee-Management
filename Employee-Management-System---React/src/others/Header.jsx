@@ -3,9 +3,9 @@ import React from 'react'
 const Header = (props) => {
 
   const logOut = () => {
-    localStorage.setItem("loggin", "")
-    // window.location.reload()
-    props.userChange('')
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    props.userChange(null);
   }
 
   const handleAdd = () => {

@@ -3,14 +3,17 @@ import Login from "./Components/Auth/Login";
 import AdminDashboard from "./Dashboard/AdminDashboard";
 
 function App() {
-  const [admin, setAdmin] = useState(null);
+  const [admin, setAdmin] = useState(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
   return (
     <>
       {!admin ? (
         <Login setAdmin={setAdmin} />
       ) : (
-        <AdminDashboard admin={admin} />
+        <AdminDashboard admin={admin} setAdmin={setAdmin} />
       )}
     </>
   );

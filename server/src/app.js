@@ -23,6 +23,7 @@ console.log("APP VERSION: LOGIN TEST");
 app.use("/api/v1", require("./Route/authRoute"));
 app.use("/api/v1", require('./Route/employees'));
 app.use("/api/v1", require('./Route/taskRoute'));
+app.use("/api/v1", require('./Route/teamRoute'));
 
 
 module.exports = app;

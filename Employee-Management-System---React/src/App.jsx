@@ -5,7 +5,10 @@ import EmployeeDashboard from './components/Dashboard/EmployeeDashboard';
 
 const App = () => {
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
   return (
     <>
