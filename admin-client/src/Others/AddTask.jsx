@@ -9,8 +9,21 @@ const AddTask = () => {
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [employees, setEmployees] = useState([]);
+  const [assignType, setAssignType] = useState('');
+  const [teams, setTeams] = useState([]);
 
   useEffect(()=>{
+    const getTeams = async () => {
+      try {
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/getTeam`);
+
+          setTeams(response.data.team);
+          console.log("Teams", response.data.team);
+      }catch(error){
+          alert(error);
+      }
+    };
+
     const getEmployees = async () =>{
       try{
           const response = await axios.get(`${import.meta.env.VITE_API_URL}/employee`);
@@ -23,7 +36,8 @@ const AddTask = () => {
       }
     };
       getEmployees();
-  },[]);
+      getTeams();
+  },[assignType]);
 
   const handleForm = async (e) => {
     e.preventDefault();
@@ -33,6 +47,7 @@ const AddTask = () => {
           title,
           date,
           assign,
+          assignType,
           category,
           description
         });
@@ -59,6 +74,7 @@ const AddTask = () => {
   };
 
   return (
+    <>
     <form
       onSubmit={handleForm}
       className="h-[58%] bg-[#1C1C1C] w-full px-10 p-3 flex justify-between"
@@ -81,7 +97,22 @@ const AddTask = () => {
           type="date"
         />
 
-        <h3 className="font-bold text-white mb-1">Assign To</h3>
+        <h3 className="font-bold text-white mb-1">Assign Type</h3>
+       <select
+  value={assignType}
+  onChange={(e) => setAssignType(e.target.value)}
+  className="outline-none w-[30vw] rounded-lg p-2 mb-5 border-2 text-white border-white bg-black"
+>
+  <option value="">Select Type</option>
+
+    <option value="employee">Employee</option>
+    <option value="team">Team</option>
+
+</select>
+
+        {assignType === 'employee' && (
+            <>
+           <h3 className="font-bold text-white mb-1">Assign To</h3>
        <select
   value={assign}
   onChange={(e) => setAssign(e.target.value)}
@@ -95,6 +126,29 @@ const AddTask = () => {
     </option>
   ))}
 </select>
+
+     </>
+        )}
+
+ {assignType === 'team' && (
+            <>
+           <h3 className="font-bold text-white mb-1">Assign To</h3>
+       <select
+  value={assign}
+  onChange={(e) => setAssign(e.target.value)}
+  className="outline-none w-[30vw] rounded-lg p-2 mb-5 border-2 text-white border-white bg-black"
+>
+  <option value="">Select Team</option>
+
+  {teams.map((team) => (
+    <option key={team._id} value={team._id}>
+      {team.name}
+    </option>
+  ))}
+</select>
+
+     </>
+        )}
 
         <h3 className="font-bold text-white mb-1">Category</h3>
         <input
@@ -123,6 +177,7 @@ const AddTask = () => {
         </button>
       </div>
     </form>
+    </>
   );
 };
 

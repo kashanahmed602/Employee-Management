@@ -16,6 +16,12 @@ const task = new mongoose.Schema({
         require: true
     },
 
+    assignType:{
+        type: String,
+        enum: ['employee', 'team'],
+        default: 'employee'
+    },
+
     category:{
         type: String,
         require: true

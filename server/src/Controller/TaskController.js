@@ -2,13 +2,14 @@ const task = require('../models/task');
 
 
 const createTask = async (req, res) => {
-    const { title, date, assign, category, description } = req.body;
+    const { title, date, assign, category, description, assignType } = req.body;
 
     try {
         const newTask = await task.create({
             title,
             date,
             assign,
+            assignType,
             category,
             description
         });
