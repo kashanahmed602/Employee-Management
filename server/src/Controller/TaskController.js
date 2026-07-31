@@ -1,4 +1,5 @@
 const task = require('../models/task');
+const mongoose = require('mongoose');
 
 
 const createTask = async (req, res) => {
@@ -29,12 +30,30 @@ const createTask = async (req, res) => {
     }
 }
 
+const team = require('../models/team');
+
 const getAssignTask = async (req, res) =>{
 
     try{
 
     const {assign} = req.params; 
-    const getTask = await task.find({assign});
+    
+    // Find all teams where this employee is a member (checking both string and ObjectId representations)
+    const orConditions = [{ "members.employeeId": assign }];
+    if (mongoose.Types.ObjectId.isValid(assign)) {
+        orConditions.push({ "members.employeeId": new mongoose.Types.ObjectId(assign) });
+    }
+    const employeeTeams = await team.find({ $or: orConditions });
+    const teamIds = employeeTeams.map(t => t._id.toString());
+
+    // Fetch tasks: either personal tasks (assigned to employee ID, and assignType is NOT 'team')
+    // OR team tasks (assigned to employee's team IDs, and assignType is 'team')
+    const getTask = await task.find({
+        $or: [
+            { assign: assign, assignType: { $ne: 'team' } },
+            { assign: { $in: teamIds }, assignType: 'team' }
+        ]
+    });
 
     res.status(200).json({
         success: true,
@@ -42,6 +61,7 @@ const getAssignTask = async (req, res) =>{
         task: getTask
     })
     }catch(error){
+        console.error("getAssignTask error:", error);
         res.status(500).json({
             message: "Internal Server Error"
         });

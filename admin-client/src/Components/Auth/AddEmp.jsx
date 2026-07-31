@@ -6,7 +6,8 @@ const AddEmp = ({ setShowAddEmp }) => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [role, setRole] = useState("employee")
+    const [role, setRole] = useState("employee");
+    const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -18,6 +19,7 @@ const AddEmp = ({ setShowAddEmp }) => {
 
 const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try{
         const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`,{
@@ -33,69 +35,89 @@ const handleSubmit = async (e) => {
         setName("");
         setEmail("");
         setPassword("");
-
-        //close pop form
         setShowAddEmp(false);
 
-    }catch{
+    }catch(error){
         console.log(error);
-        alert("Error Adding Employees! please try again later");
-
+        alert(error.response?.data?.message || "Error Adding Employee! Please try again later.");
+    }finally{
+        setLoading(false);
     }
 }
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70">
-      <div className="w-[450px] rounded-xl bg-[#1f1f1f] p-8 relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+      <div className="w-full max-w-md rounded-2xl bg-[#0e0f15]/95 border border-white/[0.08] p-8 relative shadow-2xl animate-in fade-in zoom-in-95 duration-200">
 
         <button
           onClick={() => setShowAddEmp(false)}
-          className="absolute top-4 right-4 text-white text-2xl"
+          className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors cursor-pointer text-xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/5"
         >
           ✕
         </button>
 
-         <h2 className="text-3xl font-bold text-white text-center mb-6">
-          Add Employee
+         <h2 className="text-2xl font-extrabold text-white text-center mb-6 tracking-tight">
+          Add New Employee
         </h2>
 
         <form className="space-y-5" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Enter Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full p-3 rounded bg-[#2b2b2b] text-white outline-none"
-            required
-          />
+          <div>
+            <label className="block text-gray-400 text-xs font-semibold uppercase tracking-wider mb-2">Full Name</label>
+            <input
+              type="text"
+              placeholder="John Doe"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.1] text-white placeholder-gray-500 outline-none focus:border-violet-500 focus:bg-white/[0.06] focus:ring-1 focus:ring-violet-500 transition-all duration-200 text-sm font-medium"
+              required
+            />
+          </div>
 
-          <input
-            type="email"
-            placeholder="Enter Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-3 rounded bg-[#2b2b2b] text-white outline-none"
-            required
-          />
+          <div>
+            <label className="block text-gray-400 text-xs font-semibold uppercase tracking-wider mb-2">Email Address</label>
+            <input
+              type="email"
+              placeholder="employee@company.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.1] text-white placeholder-gray-500 outline-none focus:border-violet-500 focus:bg-white/[0.06] focus:ring-1 focus:ring-violet-500 transition-all duration-200 text-sm font-medium"
+              required
+            />
+          </div>
 
-          <input
-            type="password"
-            placeholder="Enter Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 rounded bg-[#2b2b2b] text-white outline-none"
-            required
-          />
+          <div>
+            <label className="block text-gray-400 text-xs font-semibold uppercase tracking-wider mb-2">Password</label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.1] text-white placeholder-gray-500 outline-none focus:border-violet-500 focus:bg-white/[0.06] focus:ring-1 focus:ring-violet-500 transition-all duration-200 text-sm font-medium"
+              required
+            />
+          </div>
 
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="w-full p-3 rounded bg-[#2b2b2b] text-white outline-none">
-            <option value="employee">Employee</option>
-            <option value="admin">Admin</option>
-          </select>
+          <div>
+            <label className="block text-gray-400 text-xs font-semibold uppercase tracking-wider mb-2">Access Role</label>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.1] text-white outline-none focus:border-violet-500 focus:bg-white/[0.06] transition-all duration-200 text-sm font-medium [color-scheme:dark]"
+            >
+              <option value="employee" className="bg-[#121218] text-white">Employee</option>
+              <option value="admin" className="bg-[#121218] text-white">Admin</option>
+            </select>
+          </div>
 
-          <button className="w-full bg-green-600 py-3 rounded text-white">
-            Add Employee
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-violet-900/20 active:scale-[0.98] transition-all duration-150 cursor-pointer disabled:opacity-50 flex items-center justify-center text-sm uppercase tracking-wider"
+          >
+            {loading ? (
+              <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+            ) : (
+              "Add Employee"
+            )}
           </button>
         </form>
       </div>

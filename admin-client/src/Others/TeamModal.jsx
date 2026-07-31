@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-// import { response } from "../../../server/src/app";
 import axios from "axios";
 import { useEffect } from "react";
 
@@ -8,51 +7,41 @@ const TeamModal = ({ setShowMakeTeam }) => {
   const [teamName, setTeamName] = useState("");
   const [employee, setEmployee] = useState([]);
   const [selectedEmployees, setSelectedEmployees] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(()=>{
-
-  const fetchedEmp = async () =>{
-    try{
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/employee`);
-
-        setEmployee(response.data.employee);
-        console.log(response.data.employee);
-    }catch(error){
-        alert(error);
-    }
-  };
-
-  fetchedEmp();
-
-   },[setShowMakeTeam])
+    const fetchedEmp = async () =>{
+      try{
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/employee`);
+          setEmployee(response.data.employee);
+          console.log(response.data.employee);
+      }catch(error){
+          alert(error);
+      }
+    };
+    fetchedEmp();
+  },[setShowMakeTeam])
 
   const createTeam = async () =>{
+    if(!teamName) return alert("Please enter team name");
+    if(selectedEmployees.length === 0) return alert("Please select at least one employee");
+    setLoading(true);
     try{
         const response = await axios.post(`${import.meta.env.VITE_API_URL}/createTeam`,{
             name: teamName,
             members: selectedEmployees.map(emp => emp._id)
         });
-
+        alert("Team Created Successfully");
         setShowMakeTeam(false);
     }catch(error){
         console.log(error);
-        alert(error);
+        alert(error.response?.data?.message || "Failed to create team");
+    }finally{
+        setLoading(false);
     }
   }
 
-  // Dummy Employees
-  // const employees = [
-  //   "Ali",
-  //   "Ahmed",
-  //   "Usman",
-  //   "Bilal",
-  //   "Hamza",
-  //   "Areeb",
-  //   "Kashan",
-  // ];
-
   const handleSelect = (e) => {
-
     const selectedEmployee = employee.find(
         emp => emp._id === e.target.value
     );
@@ -68,120 +57,105 @@ const TeamModal = ({ setShowMakeTeam }) => {
             selectedEmployee
         ]);
     }
-
     e.target.value="";
-}
+  }
 
-  const removeEmployee = (employee) => {
+  const removeEmployee = (employeeToRemove) => {
     setSelectedEmployees(
-      selectedEmployees.filter((emp) => emp !== employee)
+      selectedEmployees.filter((emp) => emp._id !== employeeToRemove._id)
     );
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex justify-center items-center z-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+      <div className="w-full max-w-lg rounded-2xl bg-[#0e0f15]/95 border border-white/[0.08] p-8 relative shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+        
+        <button
+          onClick={() => setShowMakeTeam(false)}
+          className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors cursor-pointer text-xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/5"
+        >
+          ✕
+        </button>
 
-      <div className="bg-[#1f1f1f] w-[600px] rounded-xl p-8">
-
-        <h2 className="text-white text-3xl font-bold mb-8">
-          Create Team
+        <h2 className="text-2xl font-extrabold text-white text-center mb-8 tracking-tight">
+          Create New Team
         </h2>
 
         {/* Team Name */}
-
         <div className="mb-6">
-
-          <label className="text-gray-300 block mb-2">
+          <label className="block text-gray-400 text-xs font-semibold uppercase tracking-wider mb-2">
             Team Title
           </label>
-
           <input
             type="text"
-            placeholder="Enter Team Name"
+            placeholder="e.g. Frontend Squad, Marketing team"
             value={teamName}
             onChange={(e) => setTeamName(e.target.value)}
-            className="w-full p-3 rounded-lg bg-[#2b2b2b] text-white outline-none"
+            className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.1] text-white placeholder-gray-500 outline-none focus:border-violet-500 focus:bg-white/[0.06] focus:ring-1 focus:ring-violet-500 transition-all duration-200 text-sm font-medium"
           />
-
         </div>
 
         {/* Employee Dropdown */}
-
-        <div className="mb-4">
-
-          <label className="text-gray-300 block mb-2">
-            Add Employees
+        <div className="mb-6">
+          <label className="block text-gray-400 text-xs font-semibold uppercase tracking-wider mb-2">
+            Add Members
           </label>
-
           <select
             onChange={handleSelect}
-            className="w-full p-3 rounded-lg bg-[#2b2b2b] text-white outline-none"
+            className="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.1] text-white outline-none focus:border-violet-500 focus:bg-white/[0.06] transition-all duration-200 text-sm font-medium [color-scheme:dark]"
           >
-
-            <option value="">
-              Select Employee
-            </option>
-
+            <option value="" className="bg-[#121218] text-white">Select Employee</option>
             {employee.map((emp) => (
-
-              <option key={emp._id} value={emp._id}>
+              <option key={emp._id} value={emp._id} className="bg-[#121218] text-white">
                 {emp.name}
               </option>
-
             ))}
-
           </select>
-
         </div>
 
         {/* Selected Employees */}
-
-        <div className="flex flex-wrap gap-3 mb-8">
-
-          {selectedEmployees.map((emp) => (
-
-            <div
-              key={emp._id}
-              className="flex items-center gap-2 bg-green-600 px-4 py-2 rounded-full text-white"
-            >
-
-              <span>{emp.name}</span>
-
-              <button
-                onClick={() => removeEmployee(emp)}
-                className="font-bold hover:text-red-300"
-              >
-                ×
-              </button>
-
+        {selectedEmployees.length > 0 && (
+          <div className="mb-8">
+            <label className="block text-gray-400 text-xs font-semibold uppercase tracking-wider mb-3">
+              Selected Members ({selectedEmployees.length})
+            </label>
+            <div className="flex flex-wrap gap-2 max-h-36 overflow-y-auto p-2 bg-white/[0.02] border border-white/[0.05] rounded-xl">
+              {selectedEmployees.map((emp) => (
+                <div
+                  key={emp._id}
+                  className="flex items-center gap-1.5 bg-violet-500/10 border border-violet-500/20 px-3 py-1.5 rounded-full text-violet-300 text-xs font-semibold"
+                >
+                  <span>{emp.name}</span>
+                  <button
+                    onClick={() => removeEmployee(emp)}
+                    className="w-4 h-4 flex items-center justify-center font-bold hover:text-white rounded-full hover:bg-violet-500/20 transition-all cursor-pointer"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
             </div>
-
-          ))}
-
-        </div>
+          </div>
+        )}
 
         {/* Buttons */}
-
-        <div className="flex justify-end gap-4">
-
+        <div className="flex justify-end gap-3 mt-6">
           <button
             onClick={() => setShowMakeTeam(false)}
-            className="px-6 py-3 rounded-lg bg-gray-600 hover:bg-gray-700 text-white"
+            className="px-5 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.1] text-gray-300 text-sm font-semibold transition-all cursor-pointer"
           >
             Cancel
           </button>
-
           <button
             onClick={createTeam}
-            className="px-6 py-3 rounded-lg bg-green-600 hover:bg-green-700 text-white"
+            disabled={loading}
+            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white text-sm font-semibold transition-all shadow-lg shadow-violet-900/10 cursor-pointer disabled:opacity-50"
           >
-            Create Team
+            {loading ? "Creating..." : "Create Team"}
           </button>
-
         </div>
 
       </div>
-
     </div>
   );
 };

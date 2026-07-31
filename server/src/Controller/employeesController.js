@@ -18,4 +18,31 @@ const getEmployee = async (req, res) => {
     }
 }
 
-module.exports = {getEmployee};
+const deleteEmployee = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const deletedUser = await User.findByIdAndDelete(id);
+
+        if (!deletedUser) {
+            return res.status(404).json({
+                success: false,
+                message: "Employee Not Found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Employee Deleted Successfully",
+            employee: deletedUser
+        });
+    } catch (error) {
+        console.error("deleteEmployee error", error);
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
+    }
+};
+
+module.exports = {getEmployee, deleteEmployee};

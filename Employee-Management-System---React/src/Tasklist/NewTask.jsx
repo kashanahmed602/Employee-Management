@@ -1,38 +1,65 @@
 import React from 'react'
 import axios from 'axios'
 
-const NewTask = ({data, onClick}) => {
+const NewTask = ({data, teamName, onClick}) => {
 
   const taskUpdation = async (e) => {
     e.stopPropagation();
 
     try{
-    const response = await axios.put(`${import.meta.env.VITE_API_URL}/taskUpdate/${data._id}`, {
-      type: "Active Task"
-    });
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/taskUpdate/${data._id}`, {
+        type: "Active Task"
+      });
 
-    console.log(response.data);
-    alert("Task Accepted");
-
-    window.location.reload();
-  }catch(error){
-    console.log(error)
-  }
+      console.log(response.data);
+      alert("Task Accepted");
+      window.location.reload();
+    }catch(error){
+      console.log(error)
+    }
   }
 
   return (
-    <div onClick={onClick} className=' bg-amber-300 w-[23%] rounded-lg shrink-0'>
-         <div className='flex items-center justify-between p-4'>
-             <h5 className='border-1 font-extrabold border-red-600 bg-red-600 px-3 py-1 rounded-lg text-white '>{data.category}</h5>
-             <h3 className='text-white font-bold'>{data.date}</h3>
+    <div onClick={onClick} className="bg-white/[0.02] border border-white/[0.06] hover:border-indigo-500/50 hover:bg-white/[0.04] rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between h-[280px] shadow-lg hover:shadow-indigo-500/5 relative overflow-hidden group cursor-pointer">
+      <div className="absolute top-0 right-0 w-20 h-20 bg-indigo-500/5 rounded-full blur-lg pointer-events-none group-hover:bg-indigo-500/10 transition-colors" />
+      
+      <div>
+        <div className="flex items-center justify-between gap-4 mb-4">
+          <span className="text-[10px] uppercase font-bold tracking-wider text-indigo-400 px-2.5 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded-full">
+            {data.category}
+          </span>
+          <span className="text-gray-400 text-xs font-semibold">
+            {new Date(data.date).toLocaleDateString()}
+          </span>
         </div>
-        <div className=' flex flex-col gap-5 mt-3 p-4 font-black text-white'>
-            <h3 className='text-black text-xl'>{data.title}</h3>
-            <h3 className=''>{data.description}</h3>
-        </div>
-        <div className='p-3 mt-3'>
-            <button onClick={taskUpdation} className='w-full bg-blue-600 rounded-lg cursor-pointer active:scale-90 p-1 text-white font-bold'>Accept Task</button>
-        </div>
+
+        <h3 className="text-lg font-bold text-white leading-snug line-clamp-2 mb-2 group-hover:text-indigo-400 transition-colors">
+          {data.title}
+        </h3>
+        
+        <p className="text-gray-400 text-xs leading-relaxed line-clamp-3">
+          {data.description}
+        </p>
+      </div>
+
+      <div className="mt-4 pt-4 border-t border-white/[0.04] flex items-center justify-between gap-4">
+        {teamName ? (
+          <span className="text-[10px] font-bold text-violet-400 bg-violet-500/10 px-2 py-0.5 rounded-md border border-violet-500/20 max-w-[100px] truncate" title={`Team Task: ${teamName}`}>
+            👥 {teamName}
+          </span>
+        ) : (
+          <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
+            👤 Personal
+          </span>
+        )}
+
+        <button 
+          onClick={taskUpdation} 
+          className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs px-4 py-2 rounded-xl active:scale-[0.97] transition-all cursor-pointer shadow-md shadow-indigo-900/10"
+        >
+          Accept Task
+        </button>
+      </div>
     </div>
   )
 }

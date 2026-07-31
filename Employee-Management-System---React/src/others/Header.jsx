@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 const Header = (props) => {
 
@@ -8,37 +8,28 @@ const Header = (props) => {
     props.userChange(null);
   }
 
-  const handleAdd = () => {
-    console.log("Add Button Clicked");
-    // Yahan Add Employee ka modal ya page open karna hai
-  }
-
   return (
-    <div className='flex justify-between p-6 px-12 items-center'>
-      <h1 className='text-white text-xl'>
-        Hello, <br />
-        <span className='text-2xl font-bold'>
-          {props.data.name} 👋
-        </span>
-      </h1>
+    <header className="sticky top-0 z-40 w-full bg-[#0a0b10]/80 backdrop-blur-md border-b border-white/[0.06] px-4 md:px-12 py-4 flex justify-between items-center">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-lg bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold text-lg shadow-md">
+          {props.data?.name?.charAt(0).toUpperCase() || 'E'}
+        </div>
+        <div>
+          <span className="text-gray-400 text-xs font-semibold uppercase tracking-wider block">Workspace</span>
+          <span className="text-white text-lg font-extrabold tracking-tight">Hello, {props.data?.name || 'Employee'} 👋</span>
+        </div>
+      </div>
 
-      <div className='flex gap-4'>
-        <button
-          onClick={()=> props.setShowAddEmp(true)}
-          className='text-white bg-green-600 hover:bg-green-700 px-5 py-3 text-xl rounded-lg active:scale-90'
-        >
-          Add
-        </button>
-
+      <div>
         <button
           onClick={logOut}
-          className='text-white ring-2 ring-white hover:ring-red-600 hover:text-red-600 hover:bg-white active:scale-90 cursor-pointer bg-red-600 px-5 py-3 text-xl rounded-lg'
+          className="text-rose-400 hover:text-white bg-rose-500/10 hover:bg-rose-600 border border-rose-500/20 hover:border-transparent px-5 py-2 text-xs font-semibold rounded-xl active:scale-[0.98] transition-all duration-200 cursor-pointer text-center"
         >
           Log Out
         </button>
       </div>
-    </div>
+    </header>
   )
 }
 
-export default Header
+export default Header;

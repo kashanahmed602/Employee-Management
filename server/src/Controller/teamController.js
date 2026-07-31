@@ -68,4 +68,31 @@ const getTeam = async (req, res) => {
     }
 };
 
-module.exports = {createTeam, getTeam};
+const deleteTeam = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const deletedTeam = await team.findByIdAndDelete(id);
+
+        if (!deletedTeam) {
+            return res.status(404).json({
+                success: false,
+                message: "Team Not Found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Team Deleted Successfully",
+            team: deletedTeam
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            error: error.message
+        });
+    }
+};
+
+module.exports = {createTeam, getTeam, deleteTeam};

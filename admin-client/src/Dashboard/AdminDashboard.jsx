@@ -9,7 +9,7 @@ const AdminDashboard = ({ admin, setAdmin }) => {
   const [showAddEmp, setShowAddEmp] = useState(false);
   const [showMakeTeam, setShowMakeTeam] = useState(false);
   return (
-    <div className="min-h-screen bg-[#121111]">
+    <div className="min-h-screen bg-[#0a0b10] flex flex-col gap-4 pb-12">
 
       <Header
         admin={admin}
