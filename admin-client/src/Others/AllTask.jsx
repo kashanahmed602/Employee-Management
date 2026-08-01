@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios'
 import TaskModal from './TaskModal'
+import TeamModal from './TeamModal'
 
 const AllTask = () => {
   const [employee, setEmployee] = useState([]);
@@ -9,8 +10,10 @@ const AllTask = () => {
   const [task, setTask] = useState([]);
   const [activeTab, setActiveTab] = useState('employees'); // 'employees' or 'teams'
   const [showModal, setShowModal] = useState(false);
+  const [showTeamModal, setShowTeamModal] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [selectedTeam, setSelectedTeam] = useState(null);
+  const [editingTeam, setEditingTeam] = useState(null);
 
   const deleteTeam = async (id, name) => {
     if (!window.confirm(`Are you sure you want to delete team "${name}"?`)) {
@@ -42,41 +45,25 @@ const AllTask = () => {
     }
   };
 
+  const loadDashboardData = async () => {
+    try {
+      const [taskResponse, employeeResponse, teamResponse] = await Promise.all([
+        axios.get(`${import.meta.env.VITE_API_URL}/allTask`),
+        axios.get(`${import.meta.env.VITE_API_URL}/employee`),
+        axios.get(`${import.meta.env.VITE_API_URL}/getTeam`),
+      ]);
+
+      setTask(taskResponse.data.task || []);
+      setEmployee(employeeResponse.data.employee || []);
+      setTeams(teamResponse.data.team || []);
+    } catch (error) {
+      console.log('error loading dashboard data', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchTask = async () => {
-      try{
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/allTask`);
-        console.log('all Task Response : ', response.data.task);
-        setTask(response.data.task);
-      }catch(error){
-        console.log('error : ', error);
-      }
-    };
-
-    const fetchEmployee = async () => {
-      try{
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/employee`);
-        console.log('Employee Fetched : ', response.data.employee);
-        setEmployee(response.data.employee);
-      }catch(error){
-        console.log("error", error);
-      }
-    };
-
-    const fetchTeams = async () => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/getTeam`);
-        console.log('Teams Fetched:', response.data.team);
-        setTeams(response.data.team || []);
-      } catch(error) {
-        console.log("error fetching teams", error);
-      }
-    };
-
-    fetchTask();
-    fetchEmployee();
-    fetchTeams();
-  },[])
+    loadDashboardData();
+  }, []);
 
   return (
     <div className="px-4 md:px-12 pb-16">
@@ -203,8 +190,21 @@ const AllTask = () => {
                       <div className="w-8 h-8 rounded-full bg-indigo-600/20 text-indigo-400 flex items-center justify-center text-sm font-bold">
                         {team.name.charAt(0).toUpperCase()}
                       </div>
-                      <div>
-                        <h4 className="text-sm font-bold text-white">{team.name}</h4>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-bold text-white">{team.name}</h4>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditingTeam(team);
+                              setShowTeamModal(true);
+                            }}
+                            className="text-violet-300 hover:text-white transition-colors cursor-pointer"
+                            title="Edit Team"
+                          >
+                            ✎
+                          </button>
+                        </div>
                         <p className="text-gray-400 text-xs font-normal">{team.members?.length || 0} members</p>
                       </div>
                     </div>
@@ -246,6 +246,18 @@ const AllTask = () => {
           )}
         </div>
       </div>
+
+      {showTeamModal && (
+        <TeamModal
+          setShowMakeTeam={setShowTeamModal}
+          editingTeam={editingTeam}
+          onTeamUpdated={() => {
+            setShowTeamModal(false);
+            setEditingTeam(null);
+            loadDashboardData();
+          }}
+        />
+      )}
 
       {showModal && (
         <TaskModal 

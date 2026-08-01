@@ -95,4 +95,45 @@ const deleteTeam = async (req, res) => {
     }
 };
 
-module.exports = {createTeam, getTeam, deleteTeam};
+const updateTeam = async (req, res) => {
+    const { id } = req.params;
+    const { name, members } = req.body;
+
+    try {
+        const users = await user.find({
+            _id: { $in: members || [] }
+        });
+
+        const teamMembers = users.map((userDoc) => ({
+            employeeId: userDoc._id,
+            name: userDoc.name,
+            email: userDoc.email
+        }));
+
+        const updatedTeam = await team.findByIdAndUpdate(id, {
+            name,
+            members: teamMembers
+        }, {
+            new: true
+        });
+
+        if (!updatedTeam) {
+            return res.status(404).json({
+                success: false,
+                message: "Team Not Found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            team: updatedTeam
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+module.exports = {createTeam, getTeam, deleteTeam, updateTeam};
